@@ -5,13 +5,16 @@
  */
 package com.sg.videogamelibrarywebapplication.daoImpl;
 
+import com.sg.videogamelibrarywebapplication.dao.VideoGameLibraryDao;
+import com.sg.videogamelibrarywebapplication.model.VideoGame;
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
  * @author kmlnd
  */
-public class VideoGameLibraryDatabaseDaoImpl {
+public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     //declaring jdbctemplate
     JdbcTemplate jdbctemplate;
@@ -22,4 +25,30 @@ public class VideoGameLibraryDatabaseDaoImpl {
     }
 
     //Prepared Statements
+
+    @Override
+    public List<VideoGame> getAllVideoGames() {
+        
+    }
+
+    @Override
+    public VideoGame getVideoGameById(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateVideoGame(VideoGame videoGame) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeVideoGame(VideoGame videoGame) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public VideoGame getVideoGameByName(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }
