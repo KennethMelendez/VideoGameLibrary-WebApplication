@@ -55,5 +55,5 @@ ADD CONSTRAINT fk_videogamesuserid FOREIGN KEY (userid) REFERENCES usersvideogam
 ALTER TABLE authorities 
 ADD CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users(username);
 
-SELECT * FROM users;
+
 

@@ -18,6 +18,8 @@ public interface VideoGameLibraryDao {
     
     VideoGame getVideoGameById(int id);
     
+    void addVideoGame(VideoGame videoGame);
+    
     void updateVideoGame(VideoGame videoGame);
     
     void removeVideoGame(VideoGame videoGame);
