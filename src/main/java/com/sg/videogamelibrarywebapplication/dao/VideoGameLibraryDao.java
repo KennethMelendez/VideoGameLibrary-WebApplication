@@ -5,6 +5,7 @@
  */
 package com.sg.videogamelibrarywebapplication.dao;
 
+import com.sg.videogamelibrarywebapplication.model.User;
 import com.sg.videogamelibrarywebapplication.model.VideoGame;
 import java.util.List;
 
@@ -13,16 +14,30 @@ import java.util.List;
  * @author kmlnd
  */
 public interface VideoGameLibraryDao {
-   
+
     List<VideoGame> getAllVideoGames();
-    
+
     VideoGame getVideoGameById(int id);
-    
-    void addVideoGame(VideoGame videoGame);
-    
+
+    void addVideoGame(VideoGame videoGame, int userid);
+
     void updateVideoGame(VideoGame videoGame);
-    
+
     void removeVideoGame(VideoGame videoGame);
-    
+
     VideoGame getVideoGameByName(String name);
+
+    List<User> getAllUsers();
+    
+    void addUser(User user);
+
+    void removeUser(User user);
+
+    void updateUser(User user);
+
+    User getUserById(int id);
+
+    User getUserByUserName(String username);
+    
+    List<VideoGame> getVideoGamesByUser(int userid);
 }

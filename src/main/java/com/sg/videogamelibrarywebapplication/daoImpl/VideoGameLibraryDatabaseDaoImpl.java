@@ -6,11 +6,15 @@
 package com.sg.videogamelibrarywebapplication.daoImpl;
 
 import com.sg.videogamelibrarywebapplication.dao.VideoGameLibraryDao;
+import com.sg.videogamelibrarywebapplication.mappers.Mappers.UsersMapper;
 import com.sg.videogamelibrarywebapplication.mappers.Mappers.VideoGameMapper;
+import com.sg.videogamelibrarywebapplication.model.User;
 import com.sg.videogamelibrarywebapplication.model.VideoGame;
 import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -26,19 +30,22 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
         this.jdbctemplate = jdbctemplate;
     }
 
+    /*=====================================================================================
+        VIDEO GAMES PREPARED STATEMENTS
+    =====================================================================================*/
     // Video games Prepared Statements
     private static final String SQL_GET_ALL_VIDEOGAMES = " "
             + " SELECT * FROM videogames ";
 
     private static final String SQL_ADD_VIDEOGAME = ""
-            + " INSERT INTO videogames(userid,title,releasedate,publisher,developer,platforms,description)"
-            + " VALUES (?,?,?,?,?,?,?) ";
+            + " INSERT INTO videogames(title,releasedate,publisher,developer,platforms,description)"
+            + " VALUES (?,?,?,?,?,?) ";
 
     private static final String SQL_GET_VIDEOGAMES_BY_ID = " "
             + " SELECT videogames WHERE videogameid = ? ";
 
     private static final String SQL_UPDATE_VIDEOGAMES = " "
-            + " UPDATE videogames SET userid = ? , releasedate = ?, publisher = ?, developer = ?, platforms = ?, description = ?, "
+            + " UPDATE videogames SET releasedate = ?, publisher = ?, developer = ?, platforms = ?, description = ?, "
             + " WHERE videogameid = ?";
 
     private static final String SQL_REMOVE_VIDEOGAME = "  "
@@ -46,6 +53,42 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     private static final String SQL_GET_VIDEOGAME_BY_NAME = ""
             + " SELECT videogames WHERE title = ?  ";
+
+    
+
+    /*=====================================================================================
+        Users PREPARED STATEMENTS
+    =====================================================================================*/
+    
+    private static final String SQL_GET_ALL_USERS = " SELECT * users ";
+    
+    private static final String SQL_GET_USER_BY_ID = ""
+            + " SELECT * users WHERE usersid = ? ";
+    
+    private static final String SQL_GET_USER_BY_USERNAME = ""
+            + " SELECT * users WHERE username = ? ";
+    
+    private static final String SQL_REMOVE_USER_BY_ID = ""
+            + " DELETE from users WHERE userid = ? ";
+            
+    private static final String SQL_UPDATE_USER = ""
+            + " UPDATE users SET firstname = ?, lastname = ? , username = ? , password = ?"
+            + " WHERE userid = ? ";
+    
+    private static final String SQL_ADD_USER = " "
+            + " INSERT INTO(firstname,lastname,username,password,enabled) "
+            + " VALUES (?,?,?,?,1) ";
+    
+    /*=====================================================================================
+        UsersVideogames PREPARED STATEMENTS
+    =====================================================================================*/
+    
+    //PREPARED STATMENTS FOR Bridge table
+    private static final String SQL_USERVIDEOGAME = ""
+            + " INSERT INTO usersvideogames(userid,videogamesid) VALUES(?,?) ";
+    
+    private static final String SQL_GET_VIDEOGAMES_BY_USER = ""
+            + " SELECT videogameid, title, releasedate, publisher,developer,platforms,description FROM videogames v JOIN users u ON v.videogameid = u.userid WHERE userid = ? ";
 
     @Override
     public List<VideoGame> getAllVideoGames() {
@@ -62,9 +105,9 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void updateVideoGame(VideoGame videoGame) {
         jdbctemplate.update(SQL_UPDATE_VIDEOGAMES,
-                videoGame.getUserid(),
                 videoGame.getTitle(),
                 videoGame.getReleaseddate(),
                 videoGame.getPublisher(),
@@ -77,7 +120,7 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     @Override
     public void removeVideoGame(VideoGame videoGame) {
-        jdbctemplate.update(SQL_REMOVE_VIDEOGAME, videoGame.getUserid());
+        jdbctemplate.update(SQL_REMOVE_VIDEOGAME, videoGame.getVideogameid());
     }
 
     @Override
@@ -86,9 +129,9 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
     }
 
     @Override
-    public void addVideoGame(VideoGame videoGame) {
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void addVideoGame(VideoGame videoGame, int userid) {
         jdbctemplate.update(SQL_ADD_VIDEOGAME,
-                videoGame.getUserid(),
                 videoGame.getTitle(),
                 videoGame.getReleaseddate(),
                 videoGame.getPublisher(),
@@ -100,6 +143,67 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
         // geting the last id from the current object
         int videoGameid = jdbctemplate.queryForObject("select LAST_INSERT_ID()", Integer.class);
         videoGame.setVideogameid(videoGameid);
+        addUsersVideoGame(userid, videoGame.getVideogameid());
+    }
+
+    //HELPER METHOD
+    public void addUsersVideoGame(int userid, int videogameid) {
+        jdbctemplate.update(SQL_USERVIDEOGAME, userid, videogameid);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+    public void addUser(User user) {
+        jdbctemplate.update(SQL_ADD_USER,
+                user.getFirstname(),
+                user.getLastname(),
+                user.getUsername(),
+                user.getPassword()                
+                );
+        
+        int id = jdbctemplate.update("select LAST_INSERT_ID()", Integer.class);
+        user.setUserid(id);
+    }
+
+    @Override
+    public void removeUser(User user) {
+        jdbctemplate.update(SQL_REMOVE_USER_BY_ID,user.getUserid());
+    }
+
+    @Override
+    public void updateUser(User user) {
+        jdbctemplate.update(SQL_UPDATE_USER);
+    }
+
+    @Override
+    public User getUserById(int id) {
+        return jdbctemplate.queryForObject(SQL_GET_USER_BY_ID,new UsersMapper() ,id);
+    }
+
+    @Override
+    public User getUserByUserName(String username) {
+        return jdbctemplate.queryForObject(SQL_GET_USER_BY_USERNAME, new UsersMapper(), username);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        List<User> users = jdbctemplate.query(SQL_GET_ALL_USERS, new UsersMapper());
+        return putVideoGamesInUsers(users);
+    }
+    
+    // helper methods
+    public List<User> putVideoGamesInUsers(List<User> users){
+        for(User currentUsers: users){
+            int id = currentUsers.getUserid();
+            VideoGame vg = this.getVideoGameById(id);
+            currentUsers.addASingleVideoGame(vg);
+        }
+        return users;
+    }
+
+    @Override
+    public List<VideoGame> getVideoGamesByUser(int userid) {
+        return jdbctemplate.query(SQL_GET_VIDEOGAMES_BY_USER, new VideoGameMapper() , userid);
     }
 
 }

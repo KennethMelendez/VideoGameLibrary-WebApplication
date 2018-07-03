@@ -6,7 +6,10 @@
 package com.sg.videogamelibrarywebapplication.model;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,13 +18,13 @@ import java.util.Objects;
  */
 public class VideoGame {
     private int videogameid;
-    private int userid;
     private String title;
     private Date releaseddate;
     private String publisher;
     private String developer;
     private String platforms;
     private String description;
+    private List<User> users = new ArrayList<>();
     
     public VideoGame(){
         
@@ -33,14 +36,6 @@ public class VideoGame {
 
     public void setVideogameid(int videogameid) {
         this.videogameid = videogameid;
-    }
-
-    public int getUserid() {
-        return userid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
     }
 
     public String getTitle() {
@@ -91,17 +86,25 @@ public class VideoGame {
         this.description = description;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 71 * hash + this.videogameid;
-        hash = 71 * hash + this.userid;
-        hash = 71 * hash + Objects.hashCode(this.title);
-        hash = 71 * hash + Objects.hashCode(this.releaseddate);
-        hash = 71 * hash + Objects.hashCode(this.publisher);
-        hash = 71 * hash + Objects.hashCode(this.developer);
-        hash = 71 * hash + Objects.hashCode(this.platforms);
-        hash = 71 * hash + Objects.hashCode(this.description);
+        int hash = 5;
+        hash = 83 * hash + this.videogameid;
+        hash = 83 * hash + Objects.hashCode(this.title);
+        hash = 83 * hash + Objects.hashCode(this.releaseddate);
+        hash = 83 * hash + Objects.hashCode(this.publisher);
+        hash = 83 * hash + Objects.hashCode(this.developer);
+        hash = 83 * hash + Objects.hashCode(this.platforms);
+        hash = 83 * hash + Objects.hashCode(this.description);
+        hash = 83 * hash + Objects.hashCode(this.users);
         return hash;
     }
 
@@ -118,9 +121,6 @@ public class VideoGame {
         }
         final VideoGame other = (VideoGame) obj;
         if (this.videogameid != other.videogameid) {
-            return false;
-        }
-        if (this.userid != other.userid) {
             return false;
         }
         if (!Objects.equals(this.title, other.title)) {
@@ -141,8 +141,12 @@ public class VideoGame {
         if (!Objects.equals(this.releaseddate, other.releaseddate)) {
             return false;
         }
+        if (!Objects.equals(this.users, other.users)) {
+            return false;
+        }
         return true;
     }
+
     
     
 }

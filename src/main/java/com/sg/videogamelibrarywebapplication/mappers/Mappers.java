@@ -25,7 +25,6 @@ public class Mappers {
         public VideoGame mapRow(ResultSet rs, int i) throws SQLException {
             VideoGame videogame = new VideoGame();
             videogame.setVideogameid(rs.getInt("videogameid"));
-            videogame.setUserid(rs.getInt("userid"));
             videogame.setTitle(rs.getString("title"));
             videogame.setReleaseddate(rs.getDate("releasedate"));
             videogame.setPublisher(rs.getString("publisher"));
@@ -45,7 +44,6 @@ public class Mappers {
         public User mapRow(ResultSet rs, int i) throws SQLException {
             User user = new User();
             user.setUserid(rs.getInt("userid"));
-            user.setVideogameid(rs.getInt("videogameid"));
             user.setFirstname(rs.getString("firstname"));
             user.setLastname(rs.getString("lastname"));
             user.setUsername(rs.getString("username"));

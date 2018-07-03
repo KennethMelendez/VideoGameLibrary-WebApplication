@@ -5,6 +5,8 @@
  */
 package com.sg.videogamelibrarywebapplication.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,12 +15,12 @@ import java.util.Objects;
  */
 public class User {
     private int userid;
-    private int videogameid;
     private String firstname;
     private String lastname;
     private String username;
     private String password;
-    
+    private List<VideoGame> videogames = new ArrayList<>();
+            
     public User(){
         
     }
@@ -29,14 +31,6 @@ public class User {
 
     public void setUserid(int userid) {
         this.userid = userid;
-    }
-
-    public int getVideogameid() {
-        return videogameid;
-    }
-
-    public void setVideogameid(int videogameid) {
-        this.videogameid = videogameid;
     }
 
     public String getFirstname() {
@@ -71,15 +65,27 @@ public class User {
         this.password = password;
     }
 
+    public List<VideoGame> getVideogames() {
+        return videogames;
+    }
+
+    public void setVideogames(List<VideoGame> videogames) {
+        this.videogames = videogames;
+    }
+    
+    public void addASingleVideoGame(VideoGame videoGame){
+        videogames.add(videoGame);
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 37 * hash + this.userid;
-        hash = 37 * hash + this.videogameid;
-        hash = 37 * hash + Objects.hashCode(this.firstname);
-        hash = 37 * hash + Objects.hashCode(this.lastname);
-        hash = 37 * hash + Objects.hashCode(this.username);
-        hash = 37 * hash + Objects.hashCode(this.password);
+        hash = 97 * hash + this.userid;
+        hash = 97 * hash + Objects.hashCode(this.firstname);
+        hash = 97 * hash + Objects.hashCode(this.lastname);
+        hash = 97 * hash + Objects.hashCode(this.username);
+        hash = 97 * hash + Objects.hashCode(this.password);
+        hash = 97 * hash + Objects.hashCode(this.videogames);
         return hash;
     }
 
@@ -98,9 +104,6 @@ public class User {
         if (this.userid != other.userid) {
             return false;
         }
-        if (this.videogameid != other.videogameid) {
-            return false;
-        }
         if (!Objects.equals(this.firstname, other.firstname)) {
             return false;
         }
@@ -113,8 +116,14 @@ public class User {
         if (!Objects.equals(this.password, other.password)) {
             return false;
         }
+        if (!Objects.equals(this.videogames, other.videogames)) {
+            return false;
+        }
         return true;
     }
+    
+    
+    
     
     
 }
