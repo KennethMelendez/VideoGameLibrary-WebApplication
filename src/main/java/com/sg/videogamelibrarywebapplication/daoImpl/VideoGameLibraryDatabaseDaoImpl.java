@@ -23,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     //declaring jdbctemplate
-    JdbcTemplate jdbctemplate;
+    JdbcTemplate jdbcTemplate;
 
     //setter injection
-    public void setJdbcTemplate(JdbcTemplate jdbctemplate) {
-        this.jdbctemplate = jdbctemplate;
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     /*=====================================================================================
@@ -42,7 +42,7 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
             + " VALUES (?,?,?,?,?,?) ";
 
     private static final String SQL_GET_VIDEOGAMES_BY_ID = " "
-            + " SELECT videogames WHERE videogameid = ? ";
+            + " SELECT * FROM videogames WHERE videogameid = ? ";
 
     private static final String SQL_UPDATE_VIDEOGAMES = " "
             + " UPDATE videogames SET releasedate = ?, publisher = ?, developer = ?, platforms = ?, description = ?, "
@@ -54,46 +54,42 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
     private static final String SQL_GET_VIDEOGAME_BY_NAME = ""
             + " SELECT videogames WHERE title = ?  ";
 
-    
-
     /*=====================================================================================
         Users PREPARED STATEMENTS
     =====================================================================================*/
-    
-    private static final String SQL_GET_ALL_USERS = " SELECT * users ";
-    
+    private static final String SQL_GET_ALL_USERS = " SELECT * FROM users ";
+
     private static final String SQL_GET_USER_BY_ID = ""
             + " SELECT * users WHERE usersid = ? ";
-    
+
     private static final String SQL_GET_USER_BY_USERNAME = ""
             + " SELECT * users WHERE username = ? ";
-    
+
     private static final String SQL_REMOVE_USER_BY_ID = ""
             + " DELETE from users WHERE userid = ? ";
-            
+
     private static final String SQL_UPDATE_USER = ""
             + " UPDATE users SET firstname = ?, lastname = ? , username = ? , password = ?"
             + " WHERE userid = ? ";
-    
+
     private static final String SQL_ADD_USER = " "
-            + " INSERT INTO(firstname,lastname,username,password,enabled) "
+            + " INSERT INTO users(firstname,lastname,username,password,enabled) "
             + " VALUES (?,?,?,?,1) ";
-    
+
     /*=====================================================================================
         UsersVideogames PREPARED STATEMENTS
     =====================================================================================*/
-    
     //PREPARED STATMENTS FOR Bridge table
     private static final String SQL_USERVIDEOGAME = ""
             + " INSERT INTO usersvideogames(userid,videogamesid) VALUES(?,?) ";
-    
+
     private static final String SQL_GET_VIDEOGAMES_BY_USER = ""
             + " SELECT videogameid, title, releasedate, publisher,developer,platforms,description FROM videogames v JOIN users u ON v.videogameid = u.userid WHERE userid = ? ";
 
     @Override
     public List<VideoGame> getAllVideoGames() {
         try {
-            return jdbctemplate.query(SQL_GET_ALL_VIDEOGAMES, new VideoGameMapper());
+            return jdbcTemplate.query(SQL_GET_ALL_VIDEOGAMES, new VideoGameMapper());
         } catch (DataAccessException ex) {
             return null;
         }
@@ -101,13 +97,18 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     @Override
     public VideoGame getVideoGameById(int id) {
-        return jdbctemplate.queryForObject(SQL_GET_VIDEOGAMES_BY_ID, new VideoGameMapper(), id);
+
+        try {
+            return jdbcTemplate.queryForObject(SQL_GET_VIDEOGAMES_BY_ID, new VideoGameMapper(), id);
+        } catch (DataAccessException ex) {
+            return null;
+        }
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void updateVideoGame(VideoGame videoGame) {
-        jdbctemplate.update(SQL_UPDATE_VIDEOGAMES,
+        jdbcTemplate.update(SQL_UPDATE_VIDEOGAMES,
                 videoGame.getTitle(),
                 videoGame.getReleaseddate(),
                 videoGame.getPublisher(),
@@ -120,18 +121,19 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     @Override
     public void removeVideoGame(VideoGame videoGame) {
-        jdbctemplate.update(SQL_REMOVE_VIDEOGAME, videoGame.getVideogameid());
+        jdbcTemplate.update(SQL_REMOVE_VIDEOGAME, videoGame.getVideogameid());
     }
 
     @Override
     public VideoGame getVideoGameByName(String name) {
-        return jdbctemplate.queryForObject(SQL_GET_VIDEOGAME_BY_NAME, new VideoGameMapper(), name);
+        return jdbcTemplate.queryForObject(SQL_GET_VIDEOGAME_BY_NAME, new VideoGameMapper(), name);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void addVideoGame(VideoGame videoGame, int userid) {
-        jdbctemplate.update(SQL_ADD_VIDEOGAME,
+        
+        jdbcTemplate.update(SQL_ADD_VIDEOGAME,
                 videoGame.getTitle(),
                 videoGame.getReleaseddate(),
                 videoGame.getPublisher(),
@@ -141,59 +143,68 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
         );
 
         // geting the last id from the current object
-        int videoGameid = jdbctemplate.queryForObject("select LAST_INSERT_ID()", Integer.class);
+        int videoGameid = jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class);
         videoGame.setVideogameid(videoGameid);
         addUsersVideoGame(userid, videoGame.getVideogameid());
     }
 
     //HELPER METHOD
     public void addUsersVideoGame(int userid, int videogameid) {
-        jdbctemplate.update(SQL_USERVIDEOGAME, userid, videogameid);
+        jdbcTemplate.update(SQL_USERVIDEOGAME, userid, videogameid);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void addUser(User user) {
-        jdbctemplate.update(SQL_ADD_USER,
+        jdbcTemplate.update(SQL_ADD_USER,
                 user.getFirstname(),
                 user.getLastname(),
                 user.getUsername(),
-                user.getPassword()                
-                );
-        
-        int id = jdbctemplate.update("select LAST_INSERT_ID()", Integer.class);
+                user.getPassword()
+        );
+
+        int id = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         user.setUserid(id);
     }
 
     @Override
     public void removeUser(User user) {
-        jdbctemplate.update(SQL_REMOVE_USER_BY_ID,user.getUserid());
+        jdbcTemplate.update(SQL_REMOVE_USER_BY_ID, user.getUserid());
     }
 
     @Override
     public void updateUser(User user) {
-        jdbctemplate.update(SQL_UPDATE_USER);
+        jdbcTemplate.update(SQL_UPDATE_USER);
     }
 
     @Override
     public User getUserById(int id) {
-        return jdbctemplate.queryForObject(SQL_GET_USER_BY_ID,new UsersMapper() ,id);
+        try {
+            return jdbcTemplate.queryForObject(SQL_GET_USER_BY_ID, new UsersMapper(), id);
+        } catch (DataAccessException ex) {
+            return null;
+        }
+
     }
 
     @Override
     public User getUserByUserName(String username) {
-        return jdbctemplate.queryForObject(SQL_GET_USER_BY_USERNAME, new UsersMapper(), username);
+        try {
+            return jdbcTemplate.queryForObject(SQL_GET_USER_BY_USERNAME, new UsersMapper(), username);
+        } catch (DataAccessException ex) {
+            return null;
+        }
     }
 
     @Override
     public List<User> getAllUsers() {
-        List<User> users = jdbctemplate.query(SQL_GET_ALL_USERS, new UsersMapper());
+        List<User> users = jdbcTemplate.query(SQL_GET_ALL_USERS, new UsersMapper());
         return putVideoGamesInUsers(users);
     }
-    
+
     // helper methods
-    public List<User> putVideoGamesInUsers(List<User> users){
-        for(User currentUsers: users){
+    public List<User> putVideoGamesInUsers(List<User> users) {
+        for (User currentUsers : users) {
             int id = currentUsers.getUserid();
             VideoGame vg = this.getVideoGameById(id);
             currentUsers.addASingleVideoGame(vg);
@@ -203,7 +214,11 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     @Override
     public List<VideoGame> getVideoGamesByUser(int userid) {
-        return jdbctemplate.query(SQL_GET_VIDEOGAMES_BY_USER, new VideoGameMapper() , userid);
+        try {
+            return jdbcTemplate.query(SQL_GET_VIDEOGAMES_BY_USER, new VideoGameMapper(), userid);
+        } catch (DataAccessException ex) {
+            return null;
+        }
     }
 
 }

@@ -39,12 +39,12 @@ CREATE TABLE IF NOT EXISTS usersvideogames (
 );
 
 ALTER TABLE usersvideogames 
-ADD CONSTRAINT fk_userid FOREIGN KEY (userid) REFERENCES users(userid)  ON DELETE CASCADE,
-ADD CONSTRAINT fk_videogames FOREIGN KEY (videogamesid) REFERENCES videogames(videogameid) ON DELETE CASCADE;
+ADD CONSTRAINT fk_userid FOREIGN KEY (userid) REFERENCES users(userid)  ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT fk_videogames FOREIGN KEY (videogamesid) REFERENCES videogames(videogameid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
 ALTER TABLE authorities 
-ADD CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE;
+ADD CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users(username)ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 

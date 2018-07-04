@@ -39,7 +39,7 @@
     </bean>
     
     <bean id="videoGameLibraryDao" class="com.sg.videogamelibrarywebapplication.daoImpl.VideoGameLibraryDatabaseDaoImpl">
-        <property name="jdbcTemplate" value="jdbcTemplate"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
     
