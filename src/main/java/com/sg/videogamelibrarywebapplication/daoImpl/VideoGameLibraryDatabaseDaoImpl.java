@@ -45,14 +45,15 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
             + " SELECT * FROM videogames WHERE videogameid = ? ";
 
     private static final String SQL_UPDATE_VIDEOGAMES = " "
-            + " UPDATE videogames SET releasedate = ?, publisher = ?, developer = ?, platforms = ?, description = ?, "
-            + " WHERE videogameid = ?";
+            + " UPDATE videogames "
+            + " SET title = ? , releasedate = ? , publisher = ? , developer = ?, platforms = ?, description = ? "
+            + " WHERE videogameid = ? ";
 
     private static final String SQL_REMOVE_VIDEOGAME = "  "
             + " DELETE FROM videogames WHERE videogameid = ? ";
 
     private static final String SQL_GET_VIDEOGAME_BY_NAME = ""
-            + " SELECT videogames WHERE title = ?  ";
+            + " SELECT * FROM videogames WHERE title = ?  ";
 
     /*=====================================================================================
         Users PREPARED STATEMENTS
@@ -60,10 +61,10 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
     private static final String SQL_GET_ALL_USERS = " SELECT * FROM users ";
 
     private static final String SQL_GET_USER_BY_ID = ""
-            + " SELECT * users WHERE usersid = ? ";
+            + " SELECT * FROM users WHERE userid = ? ";
 
     private static final String SQL_GET_USER_BY_USERNAME = ""
-            + " SELECT * users WHERE username = ? ";
+            + " SELECT * FROM users WHERE username = ? ";
 
     private static final String SQL_REMOVE_USER_BY_ID = ""
             + " DELETE from users WHERE userid = ? ";
@@ -106,7 +107,6 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void updateVideoGame(VideoGame videoGame) {
         jdbcTemplate.update(SQL_UPDATE_VIDEOGAMES,
                 videoGame.getTitle(),
@@ -174,7 +174,13 @@ public class VideoGameLibraryDatabaseDaoImpl implements VideoGameLibraryDao {
 
     @Override
     public void updateUser(User user) {
-        jdbcTemplate.update(SQL_UPDATE_USER);
+        jdbcTemplate.update(SQL_UPDATE_USER,
+                user.getFirstname(),
+                user.getLastname(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getUserid()
+        );
     }
 
     @Override
