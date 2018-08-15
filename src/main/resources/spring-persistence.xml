@@ -42,5 +42,9 @@
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
+    <bean id="videoGameLibraryService" class="com.sg.videogamelibrarywebapplication.serviceImpl.VideoGameLibraryServiceImpl">
+        <constructor-arg ref="videoGameLibraryDao"/>
+    </bean>
+    
     
 </beans>
