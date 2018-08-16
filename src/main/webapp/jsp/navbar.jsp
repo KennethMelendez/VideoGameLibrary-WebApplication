@@ -6,4 +6,4 @@
 
 <a class="btn btn-primary" href="${pageContext.request.contextPath}/library" type="button">View Library</a>
 <a class="btn btn-primary" href="${pageContext.request.contextPath}/addVideoGame" type="button">Add Game</a>
-
+<a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/settings" type="button">Settings</a>

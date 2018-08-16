@@ -15,6 +15,8 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ModifyVideoGameController {
 
     VideoGameLibraryService s;
-    
+
     @Inject
     public ModifyVideoGameController(VideoGameLibraryService s) {
         this.s = s;
@@ -56,14 +58,26 @@ public class ModifyVideoGameController {
         vg.setPlatforms(request.getParameter("platforms"));
         vg.setDescription(request.getParameter("description"));
 
-        s.addVideoGame(vg, 23);
-        
+        s.addVideoGame(vg, 11);
+
         return "redirect:library";
     }
-    
-    @RequestMapping(value="removeGame",method = RequestMethod.GET)
-    public String removeGame(HttpServletRequest request){        
+
+    @RequestMapping(value = "/removeGame", method = RequestMethod.GET)
+    public String removeGame(HttpServletRequest request) {
         s.removeVideoGame(s.getVideoGameById(Integer.parseInt(request.getParameter("id"))));
+        return "redirect:library";
+    }
+
+    @RequestMapping(value = "/editVideoGame", method = RequestMethod.GET)
+    public String editVideoGame(HttpServletRequest request, Model model) {
+        model.addAttribute("videoGame", s.getVideoGameById(Integer.parseInt(request.getParameter("id"))));
+        return "editVideoGame";
+    }
+
+    @RequestMapping(value = "/submitUpdatedGame", method = RequestMethod.POST)
+    public String updateGame(@ModelAttribute("VideoGame")VideoGame videoGame) {
+        s.updateVideoGame(videoGame);
         return "redirect:library";
     }
 }

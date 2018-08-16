@@ -25,21 +25,27 @@
 
             <form role="form" method="POST" action="submitGame">
                 <label for="title">Title</label>
+                <br>
                 <input type="text" name="title" id="title">
-                
+                <br>
                 <label for="releaseDate">Release Date</label>
+                <br>
                 <input type="date" name="date" id="releaseDate">
-
+                <br>    
                 <label for="publisher">Publisher</label>
+                <br>
                 <input type="text" name="publisher" id="publisher">
-
+<br>
                 <label for="developer">Developer</label>
+                <br>
                 <input type="text" name="developer" id="developer">
-
+<br>
                 <label for="platforms">Platforms</label>
+                <br>
                 <input type="text" name="platforms" id="platforms">
-
+<br>
                 <label for="description">Description</label>
+                <br>
                 <textarea name="description" rows="7" cols="100" id="description"></textarea>
 
 
