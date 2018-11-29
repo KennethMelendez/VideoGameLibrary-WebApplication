@@ -35,15 +35,15 @@
                 <label for="publisher">Publisher</label>
                 <br>
                 <input type="text" name="publisher" id="publisher">
-<br>
+                <br>
                 <label for="developer">Developer</label>
                 <br>
                 <input type="text" name="developer" id="developer">
-<br>
+                <br>
                 <label for="platforms">Platforms</label>
                 <br>
                 <input type="text" name="platforms" id="platforms">
-<br>
+                <br>
                 <label for="description">Description</label>
                 <br>
                 <textarea name="description" rows="7" cols="100" id="description"></textarea>

@@ -58,20 +58,22 @@ public class ModifyVideoGameController {
         vg.setPlatforms(request.getParameter("platforms"));
         vg.setDescription(request.getParameter("description"));
 
-        s.addVideoGame(vg, 11);
+        s.addVideoGame(vg, s.getUserByUserName("SpongebobFan").getUserid());
 
         return "redirect:library";
     }
 
     @RequestMapping(value = "/removeGame", method = RequestMethod.GET)
     public String removeGame(HttpServletRequest request) {
-        s.removeVideoGame(s.getVideoGameById(Integer.parseInt(request.getParameter("id"))));
+        s.removeVideoGame(s.getVideoGameById(Integer.parseInt(request.getParameter("videoGameId"))));
         return "redirect:library";
     }
 
     @RequestMapping(value = "/editVideoGame", method = RequestMethod.GET)
     public String editVideoGame(HttpServletRequest request, Model model) {
-        model.addAttribute("videoGame", s.getVideoGameById(Integer.parseInt(request.getParameter("id"))));
+        String requestedIdId = request.getParameter("videoGameId");
+        int id = Integer.parseInt(requestedIdId);
+        model.addAttribute("videoGame", s.getVideoGameById(id));
         return "editVideoGame";
     }
 

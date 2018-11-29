@@ -32,12 +32,12 @@
                     <tbody>
                     <c:forEach var="currentGame" items="${gameList}">
                         <tr>
-                            <td><b><c:out value="${currentGame.title}"/></b></td>
+                            <td><b><a href="${pageContext.request.contextPath}/viewGame?videoGameId=${currentGame.videogameid}"><c:out value="${currentGame.title}"/></a></b></td>
                             <td><c:out value="${currentGame.description}"/></td>
-                            <td><a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/editVideoGame?id=${currentGame.videogameid}" role="button">Edit</a></td>
-                            <td><a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/removeGame?id=${currentGame.videogameid}" role="button">Delete</a></td>                    
+                            <td><a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/editVideoGame?videoGameId=${currentGame.videogameid}" role="button">Edit</a></td>
+                            <td><a class="btn btn-outline-danger" href="${pageContext.request.contextPath}/removeGame?videoGameId=${currentGame.videogameid}" role="button">Delete</a></td>                    
                         </tr>
-                        
+
                     </c:forEach>
                 </tbody>
             </table>
